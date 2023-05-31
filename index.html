@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OMDB Movie</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        color-scheme: dark !important;
+      }
+
+      body {
+        background-color: black;
+        color: white;
+        font-family: sans-serif;
+      }
+
+      h1 {
+        color: aquamarine;
+        margin-bottom: 13px;
+      }
+
+      #top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      form {
+        margin-top: 10px;
+      }
+
+      input {
+        padding: 6px;
+      }
+
+      #container {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+        width: max-content;
+        padding: 10px;
+      }
+
+      #image {
+        max-width: 300px;
+      }
+
+      #title,
+      #release,
+      #imdb,
+      #hero,
+      #recomd {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      #recomd {
+        background-color: rgb(126, 161, 76);
+        font-size: 35px;
+        width: max-content;
+        color: rgb(206, 206, 187);
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="top">
+      <h1>OMDB Movie</h1>
+
+      <form>
+        <input id="film" placeholder="Enter Movie Name" type="text" />
+        <input type="submit" value="Search" />
+      </form>
+    </div>
+
+    <div id="container">
+      <img id="image" alt="" />
+      <h2 id="title"></h2>
+      <p id="release"></p>
+      <p id="imdb"></p>
+      <p id="hero"></p>
+      <p id="recomd"></p>
+    </div>
+
+    <script>
+      document.querySelector("form").addEventListener("submit", myApp);
+
+      function myApp(event) {
+        event.preventDefault();
+
+        var film = document.querySelector("#film").value;
+        var url = "https://www.omdbapi.com/?apikey=c2130a4&t=" + film;
+
+        fetch(url)
+          .then(function (res) {
+            return res.json();
+          })
+          .then(function (res) {
+            var title = (document.getElementById("title").innerText =
+              res.Title);
+            var release = (document.getElementById("release").innerText =
+              res.Year);
+            var imdb = (document.getElementById("imdb").innerText =
+              res.imdbRating);
+            var hero = (document.getElementById("hero").innerText = res.Actors);
+            var image = (document.getElementById("image").src = res.Poster);
+
+            if (
+              title &&
+              release &&
+              imdb &&
+              hero &&
+              image &&
+              Number(res.imdbRating) < 8.5
+            ) {
+              document.getElementById("recomd").innerText = "";
+            } else if (Number(res.imdbRating) > 8.5) {
+              document.getElementById("recomd").innerText = "Recommended";
+            } else {
+              document.getElementById("image").src =
+                "https://media3.giphy.com/media/C21GGDOpKT6Z4VuXyn/giphy.gif?cid=ecf05e474owpn8ihn7ikk4uow6gal71125ta5zav7dyhr2rq&rid=giphy.gif&ct=g";
+              document.getElementById("title").innerText = "";
+              document.getElementById("release").innerText = "";
+              document.getElementById("imdb").innerText = "";
+              document.getElementById("hero").innerText = "";
+              document.getElementById("recomd").innerText = "";
+            }
+          })
+          .catch(function (err) {});
+      }
+    </script>
+  </body>
+</html>
